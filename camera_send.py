@@ -2,50 +2,78 @@
 
 from picamera import PiCamera
 from time import sleep, gmtime, strftime
-from random import randomint
+from random import randint
 import socket,select
 
-HOST = '127.0.0.1'
-PORT = 6666
+def take_pic():
+    camera = PiCamera()
+    camera.start_preview()
+    for i in range(0,4):
+        sleep(2)
+        camera.capture('/home/pi/RealTimeImageDetection/TestImage/image%s.jpg' % i)
+    camera.stop_preview()
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+take_pic()
+
+HOST = '10.189.130.117'
+PORT = 137
+
+try:
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    print ('socket created')
+except client.error as error:
+    print('socket creation failed: %s' %(err))    
+     
 server_address = (HOST, PORT)
-sock.connect(server_address)
-camera = PiCamera()
+client.connect(server_address)
 
-camera.start_preview()
-for i in range(0,11):
-    sleep(5)
-    camera.capture('/home/pi/RealTimeImageDetection/TestImage/image%s.jpg' % i)
-camera.stop_preview()
+
+
+image = "/home/pi/RealTimeImageDetection/TestImage/image15.jpg"
+
+file = open(image, 'rb')
+image_data = file.read(2048)
+
+while image_data:
+    client.send(image_data)
+    image_data = file.read(2048)
+
+file.close()
+client.close()
+
+# print(image)
+# 
+# client.close()
 
 # try:
-
-    # # open image
-    # myfile = open(image, 'rb')
-    # bytes = myfile.read()
-    # size = len(bytes)
-
-    # # send image size to server
-    # sock.sendall("SIZE %s" % size)
-    # answer = sock.recv(4096)
-
-    # print 'answer = %s' % answer
-
-    # # send image to server
-    # if answer == 'GOT SIZE':
-        # sock.sendall(bytes)
-
-        # # check what server send
-        # answer = sock.recv(4096)
-        # print 'answer = %s' % answer
-
-        # if answer == 'GOT IMAGE' :
-            # sock.sendall("BYE BYE ")
-            # print 'Image successfully send to server'
-
-    # myfile.close()
+#     print("trying to send image")
+#     # open image
+#     myfile = open(image, 'rb')
+#     bytes = myfile.read()
+#     #print(bytes)
+#     size = len(bytes)
+# 
+#     # send image size to server
+#     print size
+#     sock.sendall("SIZE %s" % size)
+#     answer = sock.recv(4096)
+#     
+#     print ('answer = %s' % answer)
+# 
+#     # send image to server
+#     if answer == 'GOT SIZE':
+#         sock.sendall(bytes)
+# 
+#         # check what server send
+#         answer = sock.recv(4096)
+#         print 'answer = %s' % answer
+# 
+#         if answer == 'GOT IMAGE' :
+#             sock.sendall("BYE BYE ")
+#             print 'Image successfully send to server'
+# 
+#     myfile.close()
 
 # finally:
-    # sock.close()
+#      sock.close()
 
