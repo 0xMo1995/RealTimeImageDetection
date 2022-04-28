@@ -1,3 +1,2 @@
-#Real Time Image Detection
-
-The purpose of this project is to take the image taken from a raspberry pi camera, and run it through a machine learning algorithm to optomize it.
+This project is to create a Real Time object detection system which connects
+a Raspberry Pi to the software service of Amazon Web Services.
